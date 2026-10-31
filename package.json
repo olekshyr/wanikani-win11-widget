@@ -20,5 +20,28 @@
     "electron-builder": "26.18.0",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
+  },
+  "author": "Alexander Shyrykalov",
+  "build": {
+    "appId": "local.wanikani.widget",
+    "productName": "WaniKani Widget",
+    "files": [
+      "dist/**",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/koffi/**"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false
+    }
   }
 }
