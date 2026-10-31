@@ -7,6 +7,6 @@ contextBridge.exposeInMainWorld('tile', {
   contextMenu: () => ipcRenderer.send('tile:context-menu'),
   moveTo: (p: { x: number; y: number }) => ipcRenderer.send('tile:move-to', p),
   dragEnd: () => ipcRenderer.send('tile:drag-end'),
-  online: () => ipcRenderer.send('tile:online'),
+  networkChange: () => ipcRenderer.send('tile:network-change'),
   ready: () => ipcRenderer.send('tile:ready'),
 });

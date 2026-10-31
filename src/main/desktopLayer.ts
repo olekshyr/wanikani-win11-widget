@@ -35,6 +35,11 @@ export function attachToDesktop(win: BrowserWindow): void {
   sendToBottom(win);
 }
 
+/** True once Explorer's desktop window exists, e.g. after Explorer restarts. */
+export function desktopReady(): boolean {
+  return Boolean(FindWindowW('Progman', null));
+}
+
 export function sendToBottom(win: BrowserWindow): void {
   SetWindowPos(hwndOf(win), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
 }

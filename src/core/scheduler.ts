@@ -3,6 +3,7 @@ const HOURLY_OFFSET_MS = 30_000;
 const BURST_INTERVAL_MS = 10 * 60_000;
 const BURST_COUNT = 6;
 const OFFLINE_CHECK_MS = 5 * 60_000;
+const QUICK_RETRY_MS = 30_000;
 
 /** Milliseconds until the next HH:00:30 (UTC hours, which is when WaniKani releases reviews) strictly after now. */
 export function msUntilNextHourlyCheck(now: Date): number {
@@ -23,6 +24,7 @@ export class RefreshScheduler {
   private hourly: ReturnType<typeof setTimeout> | null = null;
   private burst: ReturnType<typeof setInterval> | null = null;
   private offlineCheck: ReturnType<typeof setInterval> | null = null;
+  private quickRetry: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private readonly refresh: () => void, private readonly isOnline: () => boolean) {}
 
@@ -45,16 +47,29 @@ export class RefreshScheduler {
     this.armHourly();
   }
 
+  /** The OS reported the network going up or down: re-check now instead of waiting for the next tick. */
+  onNetworkChange(): void {
+    this.refresh();
+  }
+
+  /**
+   * While offline, check once after 30 s (the network is often still coming up right after login),
+   * then every 5 minutes.
+   */
   setOffline(offline: boolean): void {
     if (!offline) {
       if (this.offlineCheck) clearInterval(this.offlineCheck);
+      if (this.quickRetry) clearTimeout(this.quickRetry);
       this.offlineCheck = null;
+      this.quickRetry = null;
       return;
     }
     if (this.offlineCheck) return;
-    this.offlineCheck = setInterval(() => {
+    const check = () => {
       if (this.isOnline()) this.refresh();
-    }, OFFLINE_CHECK_MS);
+    };
+    this.quickRetry = setTimeout(check, QUICK_RETRY_MS);
+    this.offlineCheck = setInterval(check, OFFLINE_CHECK_MS);
   }
 
   stop(): void {

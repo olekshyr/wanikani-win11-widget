@@ -15,7 +15,7 @@ declare global {
       contextMenu(): void;
       moveTo(p: { x: number; y: number }): void;
       dragEnd(): void;
-      online(): void;
+      networkChange(): void;
       ready(): void;
     };
   }
@@ -64,7 +64,8 @@ window.addEventListener('contextmenu', (e) => {
   window.tile.contextMenu();
 });
 
-window.addEventListener('online', () => window.tile.online());
+window.addEventListener('online', () => window.tile.networkChange());
+window.addEventListener('offline', () => window.tile.networkChange());
 
 window.tile.ready();
 

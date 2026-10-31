@@ -93,6 +93,28 @@ describe('RefreshScheduler', () => {
     vi.advanceTimersByTime(25 * MIN); // past where the stale 40m30s timer would fire
     expect(calls).toBe(3);
   });
+
+  test('network change refreshes immediately', () => {
+    at('2026-10-31T14:20:00Z');
+    sched.start();
+    sched.onNetworkChange();
+    expect(calls).toBe(2);
+  });
+
+  test('going offline retries once after 30 s, then falls back to the 5-minute check', () => {
+    at('2026-10-31T14:20:00Z');
+    sched.start();
+    sched.setOffline(true);
+    vi.advanceTimersByTime(29_000);
+    expect(calls).toBe(1);
+    vi.advanceTimersByTime(1_000); // 30 s
+    expect(calls).toBe(2);
+    sched.setOffline(true); // the retry came back offline again: no second quick retry
+    vi.advanceTimersByTime(4 * MIN); // 4m30s
+    expect(calls).toBe(2);
+    vi.advanceTimersByTime(30_000); // 5 min check
+    expect(calls).toBe(3);
+  });
 });
 
 describe('singleFlight', () => {

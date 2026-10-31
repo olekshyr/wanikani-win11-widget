@@ -8,7 +8,7 @@ import { createTokenStore } from '../core/tokenStore';
 import type { TileState } from '../core/types';
 import { tileView } from '../core/view';
 import { DASHBOARD_URL, fetchReviewCount } from '../core/wanikani';
-import { sendToBottom } from './desktopLayer';
+import { desktopReady, sendToBottom } from './desktopLayer';
 import { buildTileMenu } from './menu';
 import { createTileWindow, TILE_WINDOW_SIZE } from './tileWindow';
 import { openTokenWindow } from './tokenWindow';
@@ -30,9 +30,27 @@ function init(): void {
   let token = tokenStore.load();
   let state: TileState = token ? { kind: 'loading' } : { kind: 'setup' };
 
-  const primary = screen.getPrimaryDisplay().workArea;
-  const workAreas = screen.getAllDisplays().map((d) => d.workArea);
-  const win = createTileWindow(resolvePosition(settings.position, workAreas, primary, TILE_WINDOW_SIZE));
+  let quitting = false;
+  app.on('before-quit', () => { quitting = true; });
+
+  const createTile = (): BrowserWindow => {
+    const workAreas = screen.getAllDisplays().map((d) => d.workArea);
+    const pos = resolvePosition(settings.position, workAreas, screen.getPrimaryDisplay().workArea, TILE_WINDOW_SIZE);
+    const w = createTileWindow(pos);
+    // The tile is owned by the desktop, so Windows destroys it when Explorer restarts: bring it back.
+    w.on('closed', () => { if (!quitting) recreateWhenDesktopReady(); });
+    return w;
+  };
+  const recreateWhenDesktopReady = () => {
+    const attempt = () => {
+      if (quitting || !win.isDestroyed()) return;
+      if (desktopReady()) win = createTile();
+      else setTimeout(attempt, 2000);
+    };
+    setTimeout(attempt, 2000);
+  };
+  let win = createTile();
+  app.on('second-instance', () => { if (win.isDestroyed()) win = createTile(); });
 
   const save = () => saveSettings(settingsFile, settings);
   const render = () => {
@@ -117,7 +135,7 @@ function init(): void {
     sendToBottom(win);
   });
 
-  ipcMain.on('tile:online', () => void refresh());
+  ipcMain.on('tile:network-change', () => scheduler.onNetworkChange());
   powerMonitor.on('resume', () => scheduler.onResume());
 
   applyLoginItem();
