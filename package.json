@@ -1,0 +1,24 @@
+{
+  "name": "wanikani-widget",
+  "version": "1.0.0",
+  "description": "Desktop tile showing pending WaniKani reviews",
+  "productName": "WaniKani Widget",
+  "main": "dist/main/main.js",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.renderer.json && node scripts/copy-static.mjs",
+    "start": "npm run build && electron .",
+    "test": "vitest run",
+    "dist": "npm run build && electron-builder --win nsis"
+  },
+  "dependencies": {
+    "koffi": "3.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  }
+}
