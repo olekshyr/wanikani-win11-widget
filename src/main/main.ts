@@ -57,6 +57,7 @@ function init(): void {
   };
 
   const onTokenSaved = (t: string) => {
+    tokenStore.save(t);
     token = t;
     state = { kind: 'loading' };
     render();
@@ -87,6 +88,13 @@ function init(): void {
         settings.locked = !settings.locked;
         save();
         render();
+      },
+      onResetPosition: () => {
+        settings.position = null;
+        save();
+        const { x, y } = resolvePosition(null, [], screen.getPrimaryDisplay().workArea, TILE_WINDOW_SIZE);
+        win.setPosition(x, y);
+        sendToBottom(win);
       },
       onChangeToken: () => openTokenWindow(onTokenSaved),
       onToggleStartup: () => {

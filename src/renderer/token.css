@@ -1,0 +1,27 @@
+:root { color-scheme: light dark; }
+body {
+  margin: 0;
+  padding: 18px 20px;
+  font: 13px/1.45 'Segoe UI', system-ui, sans-serif;
+}
+p { margin: 0 0 10px; }
+a { color: #00aaff; }
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 9px;
+  font: inherit;
+  margin: 4px 0 12px;
+}
+.row { display: flex; align-items: center; gap: 12px; }
+.error { flex: 1; color: #d93a3a; }
+button {
+  padding: 6px 18px;
+  font: inherit;
+  background: #00aaff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: default; }

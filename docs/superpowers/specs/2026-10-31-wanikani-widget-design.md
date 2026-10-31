@@ -47,6 +47,7 @@ A small widget on the Windows desktop that shows how many WaniKani reviews are w
 - **Control menu:** right-clicking the tile opens a context menu:
   - Refresh now
   - Unlock position / Lock position (one item whose label toggles)
+  - Reset position (moves the tile back to the default top-left spot and clears the saved position; added at the user's request during testing)
   - Change token…
   - Start with Windows (checkbox)
   - Quit
