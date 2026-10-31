@@ -41,7 +41,8 @@
     },
     "nsis": {
       "oneClick": true,
-      "perMachine": false
+      "perMachine": false,
+      "artifactName": "WaniKani-Widget-Setup-${version}.${ext}"
     }
   }
 }

@@ -17,7 +17,13 @@ It starts with Windows, so the reminder to do your daily reviews is there withou
 
 ## Install
 
-There's no prebuilt download yet, so you build the installer yourself. You need [Node.js](https://nodejs.org) 24 or newer.
+Download `WaniKani-Widget-Setup-<version>.exe` from the [latest release](https://github.com/olekshyr/wanikani-win11-widget/releases/latest) and run it. It installs for your user only (no admin rights needed) and starts the widget.
+
+The installer isn't code-signed, so Windows SmartScreen may show "Windows protected your PC". Click **More info → Run anyway** to continue.
+
+### Build it yourself
+
+You need [Node.js](https://nodejs.org) 24 or newer.
 
 ```bash
 git clone https://github.com/olekshyr/wanikani-win11-widget.git
@@ -26,7 +32,7 @@ npm install
 npm run dist
 ```
 
-Then run `release\WaniKani Widget Setup 1.0.0.exe`. It installs for your user only (no admin rights needed) and starts the widget.
+The installer is written to `release\WaniKani-Widget-Setup-<version>.exe`.
 
 ## First run: add your API token
 
