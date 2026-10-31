@@ -12,3 +12,23 @@ export type FetchResult =
   | { kind: 'unauthorized' }
   | { kind: 'offline' }
   | { kind: 'api-error' };
+
+export type TileState =
+  | { kind: 'setup' }
+  | { kind: 'loading' }
+  | { kind: 'reviews'; count: number }
+  | { kind: 'done' }
+  | { kind: 'offline' }
+  | { kind: 'token-invalid' }
+  | { kind: 'api-error'; lastCount: number | null };
+
+export interface TileView {
+  main: string;
+  sub: string;
+  tone: 'blue' | 'grey' | 'dark';
+  dimmed: boolean;
+  offlineIcon: boolean;
+  unlocked: boolean;
+}
+
+export type ClickAction = 'open-dashboard' | 'open-token-window' | 'none';
